@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-import static SlRenderer.slSingleBatchRenderer.OGL_MATRIX_SIZE;
+// UNCOMMENT THIS import static SlRenderer.slSingleBatchRenderer.OGL_MATRIX_SIZE;
 
 import static csc133.spot.OGL_MATRIX_SIZE;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
@@ -24,6 +24,7 @@ public class slShaderManager {
 
     }  // slShaderManager(String vs_filename, String fs_filename)
 
+    /* REMOVE LATER
     public  int compile_shader() {
 
     }  // slShaderManager(String vs_filename, String fs_filename)
@@ -32,6 +33,7 @@ public class slShaderManager {
 
         return csProgram;
     }  // public int compile_shaders()
+    REMOVE LATER */
 
     public void set_shader_program() {
 

@@ -6,7 +6,7 @@ import org.joml.Vector4f;
 public class spot {
 
     public static long my_oglwindow = 0;
-    public static int WIN_WIDTH = 1600, WIN_HEIGHT = 1600;
+    public static int WIN_WIDTH = 900, WIN_HEIGHT = 900;
     public static int WIN_POS_X = 50, WIN_POS_Y = 150;
     public static String WINDOW_TITLE = "CSC 133";
     public static final int OGL_MATRIX_SIZE = 16;

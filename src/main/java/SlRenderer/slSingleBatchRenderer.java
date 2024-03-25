@@ -42,7 +42,7 @@ public class slSingleBatchRenderer {
     private static final float[] vertices = getVertexArray(WIN_WIDTH, WIN_HEIGHT);
     private static final int[] indices = getIndexArrayForSquares(NUM_POLY_ROWS, NUM_POLY_COLS);
     private static slCamera my_camera;
-    private static final Vector3f camera_start = new Vector3f(SQUARE_SIDE, SQUARE_SIDE, 0f);
+    private static final Vector3f camera_start = new Vector3f(SQUARE_LENGTH, SQUARE_LENGTH, 0f);
 
 
     private static final float alpha = 200.0f; // Speed of the polygon across the window;
@@ -135,9 +135,10 @@ public class slSingleBatchRenderer {
         return;
     } // void initOpenGL()
 
+    // TODO: CHANGE FROM TEMPORARY TO ACTUAL VERTICES NEEDED
     private static float[] getVertexArray(int win_width, int win_height) {
-        // Fill in this function: you need four vertices. 
-
+        // Fill in this function: you need four vertices.
+        float[] ret_array = {-20f, -20f, 20f, -20f, 20f, 20f, -20f, 20f};
         return ret_array;
     }  // float[] getVertexArray(...)
 
@@ -187,7 +188,7 @@ public class slSingleBatchRenderer {
             if (dt > 0) {
                 my_camera.defaultLookFrom.x -= dt * alpha;
                 my_camera.defaultLookFrom.y -= dt * alpha;
-                if (my_camera.defaultLookFrom.x < -(WIN_WIDTH+ SQUARE_SIDE)) {
+                if (my_camera.defaultLookFrom.x < -(WIN_WIDTH+ SQUARE_LENGTH)) {
                     my_camera.defaultLookFrom.x = camera_start.x;
                     my_camera.defaultLookFrom.y = camera_start.y;
                     endTime = beginTime = getTime();
