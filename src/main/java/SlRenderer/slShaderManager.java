@@ -21,11 +21,14 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 
 public class slShaderManager {
-    private String strVertexShader;
-    private String strFragmentShader;
+    private static String strVertexShader;
+    private static String strFragmentShader;
+    //private static int shader_program;
+
     slShaderManager (String vs_filename, String fs_filename) {
-        this.strVertexShader = readShader(vs_filename);
-        this.strFragmentShader = readShader(fs_filename);
+        strVertexShader = readShader(vs_filename);
+        strFragmentShader = readShader(fs_filename);
+        //shader_program = 0;
 
     }  // slShaderManager(String vs_filename, String fs_filename)
 
@@ -43,13 +46,14 @@ public class slShaderManager {
         } catch (Exception e) {
             System.out.println("Error finding file: " + e.getMessage());
         }
+        System.out.println(strShader);
         return strShader;
     }
 
     // Overloading function, if we want to change the files and then compile
     public int compile_shader(String vs_filename, String fs_filename) {
-        this.strVertexShader = readShader(vs_filename);
-        this.strFragmentShader = readShader(fs_filename);
+        strVertexShader = readShader(vs_filename);
+        strFragmentShader = readShader(fs_filename);
         return compile_shader();
     }  // slShaderManager(String vs_filename, String fs_filename)
 
@@ -57,34 +61,40 @@ public class slShaderManager {
     public int compile_shader() {
         int csProgram = glCreateProgram();
         int VSID = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(VSID, this.strVertexShader);
+        glShaderSource(VSID, strVertexShader);
         glCompileShader(VSID);
         glAttachShader(csProgram, VSID);
         int FSID = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(FSID, this.strFragmentShader);
+        glShaderSource(FSID, strFragmentShader);
         glCompileShader(FSID);
         glAttachShader(csProgram, FSID);
         glLinkProgram(csProgram);
         glUseProgram(csProgram);
 
+        //shader_program = csProgram;
+
         return csProgram;
     }  // public int compile_shaders()
 
-    public void set_shader_program() {
-
+    public void set_shader_program(int shader_program) {
+        glUseProgram(shader_program);
     }  // public void set_shader_program()
 
     public static void detach_shader() {
-
+        glUseProgram(0);
     }  // public static void detach_shader()
 
     // TODO: SEE PREVIOUS ASSIGNMENT, ALL OF THIS IS PRE-EXISTING CODE!
-    public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4) {
+    public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4, int shader_program) {
         // send the data in my_mat4 to strMatrixName in the shader
         // 1. Get the uniform location of strMatrix in the shader program compiled
         // 2. Create a FloatBuffer
         // 3. Load the my_mat4 data to the FloatBuffer
         // 4. Send the FloatBuffer data to uniform location
+        int var_location = glGetUniformLocation(shader_program, strMatrixName);
+        FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(OGL_MATRIX_SIZE);
+        my_mat4.get(matrixBuffer);
+        glUniformMatrix4fv(var_location, false, matrixBuffer);
 
     }  //  public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4)
 
