@@ -138,7 +138,7 @@ public class slSingleBatchRenderer {
     // TODO: CHANGE FROM TEMPORARY TO ACTUAL VERTICES NEEDED
     private static float[] getVertexArray(int win_width, int win_height) {
         // Fill in this function: you need four vertices.
-        float[] ret_array = {-20f, -20f, 20f, -20f, 20f, 20f, -20f, 20f};
+        float[] ret_array = {-SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH, SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH};
         return ret_array;
     }  // float[] getVertexArray(...)
 

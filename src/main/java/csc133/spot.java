@@ -13,7 +13,7 @@ public class spot {
 
     public static int NUM_POLY_ROWS = 1, NUM_POLY_COLS = 1;
 
-    public static final float POLY_OFFSET = 20.0f, POLY_PADDING = 10.0f, SQUARE_LENGTH = 200;
+    public static final float POLY_OFFSET = 20.0f, POLY_PADDING = 10.0f, SQUARE_LENGTH = 100;
 
     public static final float FRUSTUM_LEFT = 0.0f,   FRUSTUM_RIGHT = (float)WIN_WIDTH,
             FRUSTUM_BOTTOM = 0.0f, FRUSTUM_TOP = (float)WIN_HEIGHT,
