@@ -148,7 +148,7 @@ public class slSingleBatchRenderer {
 
             endTime = getTime();
             // compute dt here
-            dt = startTime - endTime;
+            dt = endTime - startTime;
             startTime = endTime;
             if (dt > 0) {
                 // Update the two cooridinates of the defaultLookFrom of my_camera here
