@@ -41,7 +41,6 @@ public class slSingleBatchRenderer {
     private static final Vector3f camera_start = new Vector3f(SQUARE_LENGTH, SQUARE_LENGTH, 0f);
 
     private static slShaderManager mysm0;
-    private static int shader_program;
 
     private static final float alpha = 200.0f; // Speed of the polygon across the window;
 
@@ -100,7 +99,7 @@ public class slSingleBatchRenderer {
         my_camera.setProjection();
 
         mysm0 = new slShaderManager("vs_0.glsl", "fs_0.glsl");
-        shader_program = mysm0.compile_shader();
+        mysm0.compile_shader();
 
         glUniform3f(renderColorLocation, liveColor.x, liveColor.y, liveColor.z);
 
@@ -165,9 +164,9 @@ public class slSingleBatchRenderer {
                 // Update "endTime", "beginTime" - else dt will diverge quickly!
             }
             // Your slShaderManager class has to support these functions:
-            mysm0.set_shader_program(shader_program);
-            mysm0.loadMatrix4f("uProjMatrix", my_camera.getProjectionMatrix(), shader_program);
-            mysm0.loadMatrix4f("uViewMatrix", my_camera.getViewMatrix(), shader_program);
+            mysm0.set_shader_program();
+            mysm0.loadMatrix4f("uProjMatrix", my_camera.getProjectionMatrix());
+            mysm0.loadMatrix4f("uViewMatrix", my_camera.getViewMatrix());
 
             int verts_per_triangle = 3, tris_per_square = 2;  // Vertices Per Vertex
             int dvps = verts_per_triangle * tris_per_square; // Drawn Vertices Per Square

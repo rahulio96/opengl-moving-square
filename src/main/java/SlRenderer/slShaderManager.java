@@ -23,12 +23,12 @@ import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 public class slShaderManager {
     private static String strVertexShader;
     private static String strFragmentShader;
-    //private static int shader_program;
+    private static int csProgram;
 
     slShaderManager (String vs_filename, String fs_filename) {
         strVertexShader = readShader(vs_filename);
         strFragmentShader = readShader(fs_filename);
-        //shader_program = 0;
+        csProgram = -1;
 
     }  // slShaderManager(String vs_filename, String fs_filename)
 
@@ -59,7 +59,7 @@ public class slShaderManager {
 
     // Compile shaders based on filenames given when slShaderManager object is made
     public int compile_shader() {
-        int csProgram = glCreateProgram();
+        csProgram = glCreateProgram();
         int VSID = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(VSID, strVertexShader);
         glCompileShader(VSID);
@@ -76,22 +76,21 @@ public class slShaderManager {
         return csProgram;
     }  // public int compile_shaders()
 
-    public void set_shader_program(int shader_program) {
-        glUseProgram(shader_program);
+    public void set_shader_program() {
+        glUseProgram(csProgram);
     }  // public void set_shader_program()
 
     public static void detach_shader() {
         glUseProgram(0);
     }  // public static void detach_shader()
 
-    // TODO: SEE PREVIOUS ASSIGNMENT, ALL OF THIS IS PRE-EXISTING CODE!
-    public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4, int shader_program) {
+    public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4) {
         // send the data in my_mat4 to strMatrixName in the shader
         // 1. Get the uniform location of strMatrix in the shader program compiled
         // 2. Create a FloatBuffer
         // 3. Load the my_mat4 data to the FloatBuffer
         // 4. Send the FloatBuffer data to uniform location
-        int var_location = glGetUniformLocation(shader_program, strMatrixName);
+        int var_location = glGetUniformLocation(csProgram, strMatrixName);
         FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(OGL_MATRIX_SIZE);
         my_mat4.get(matrixBuffer);
         glUniformMatrix4fv(var_location, false, matrixBuffer);
