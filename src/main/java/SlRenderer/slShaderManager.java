@@ -20,20 +20,38 @@ import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 
 public class slShaderManager {
 
-    slShaderManager () {
+    slShaderManager (String vs_filename, String fs_filename) {
 
     }  // slShaderManager(String vs_filename, String fs_filename)
 
-    /* REMOVE LATER
-    public  int compile_shader() {
-
+    public int compile_shader(String vs_filename, String fs_filename) {
+        return 0;
     }  // slShaderManager(String vs_filename, String fs_filename)
 
-    public  int compile_shader() {
+    public int compile_shader() {
+        int csProgram = glCreateProgram();
+        int VSID = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(VSID,
+                "uniform mat4 uProjMatrix;" +
+                        "uniform mat4 uViewMatrix;"+
+                        "void main(void) {" +
+                        " gl_Position = uProjMatrix * uViewMatrix * gl_Vertex;" +
+                        "}");
+        glCompileShader(VSID);
+        glAttachShader(csProgram, VSID);
+        int FSID = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(FSID,
+                "uniform vec3 renderColorLocation;" +
+                        "void main(void) {" +
+                        " gl_FragColor = vec4(renderColorLocation, 1.0);" +
+                        "}");
+        glCompileShader(FSID);
+        glAttachShader(csProgram, FSID);
+        glLinkProgram(csProgram);
+        glUseProgram(csProgram);
 
         return csProgram;
     }  // public int compile_shaders()
-    REMOVE LATER */
 
     public void set_shader_program() {
 
