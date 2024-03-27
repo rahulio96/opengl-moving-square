@@ -46,7 +46,6 @@ public class slShaderManager {
         } catch (Exception e) {
             System.out.println("Error finding file: " + e.getMessage());
         }
-        System.out.println(strShader);
         return strShader;
     }
 
@@ -71,8 +70,6 @@ public class slShaderManager {
         glLinkProgram(csProgram);
         glUseProgram(csProgram);
 
-        //shader_program = csProgram;
-
         return csProgram;
     }  // public int compile_shaders()
 
@@ -84,15 +81,19 @@ public class slShaderManager {
         glUseProgram(0);
     }  // public static void detach_shader()
 
+    // Send the data in my_mat4 to strMatrixName in the shader
     public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4) {
-        // send the data in my_mat4 to strMatrixName in the shader
+
         // 1. Get the uniform location of strMatrix in the shader program compiled
-        // 2. Create a FloatBuffer
-        // 3. Load the my_mat4 data to the FloatBuffer
-        // 4. Send the FloatBuffer data to uniform location
         int var_location = glGetUniformLocation(csProgram, strMatrixName);
+
+        // 2. Create a FloatBuffer
         FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(OGL_MATRIX_SIZE);
+
+        // 3. Load the my_mat4 data to the FloatBuffer
         my_mat4.get(matrixBuffer);
+
+        // 4. Send the FloatBuffer data to uniform location
         glUniformMatrix4fv(var_location, false, matrixBuffer);
 
     }  //  public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4)
