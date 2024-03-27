@@ -31,11 +31,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glUniform3f;
 
 public class slSingleBatchRenderer {
-    private static final int OGL_MATRIX_SIZE = 16;
     private static long glfw_window = 0;
-
-    // don't call glCreateProgram() here - we have no gl-context here
-    private static int shader_program;
     private static final int renderColorLocation = 0;
 
     private static final float ccRed = 0.3f, ccGreen = 0.6f, ccBlue = 0.9f, ccAlpha = 1.0f; // Clear Colors
@@ -44,6 +40,7 @@ public class slSingleBatchRenderer {
     private static slCamera my_camera;
     private static final Vector3f camera_start = new Vector3f(SQUARE_LENGTH, SQUARE_LENGTH, 0f);
 
+    private static slShaderManager mysm0;
 
     private static final float alpha = 200.0f; // Speed of the polygon across the window;
 
@@ -72,31 +69,6 @@ public class slSingleBatchRenderer {
         }
     } // void renderLoop()
 
-    private static int compile_shader() {
-        int csProgram = glCreateProgram();
-        int VSID = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(VSID,
-                "uniform mat4 uProjMatrix;" +
-                        "uniform mat4 uViewMatrix;"+
-                        "void main(void) {" +
-                        " gl_Position = uProjMatrix * uViewMatrix * gl_Vertex;" +
-                        "}");
-        glCompileShader(VSID);
-        glAttachShader(csProgram, VSID);
-        int FSID = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(FSID,
-                "uniform vec3 renderColorLocation;" +
-                        "void main(void) {" +
-                        " gl_FragColor = vec4(renderColorLocation, 1.0);" +
-                        "}");
-        glCompileShader(FSID);
-        glAttachShader(csProgram, FSID);
-        glLinkProgram(csProgram);
-        glUseProgram(csProgram);
-
-        return csProgram;
-    }
-
     private static void initOpenGL() {
         GL.createCapabilities();
         glEnable(GL_DEPTH_TEST);
@@ -106,8 +78,8 @@ public class slSingleBatchRenderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(ccRed, ccGreen, ccBlue, ccAlpha);
 
-         int vbo = glGenBuffers();
-         int ibo = glGenBuffers();
+        int vbo = glGenBuffers();
+        int ibo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, (FloatBuffer) BufferUtils.
                 createFloatBuffer(vertices.length).
@@ -126,18 +98,16 @@ public class slSingleBatchRenderer {
         my_camera = new slCamera(new Vector3f(camera_start));
         my_camera.setProjection();
 
-        Matrix4f uProjMatrix = new Matrix4f();
-        Matrix4f uViewMatrix = new Matrix4f();
+        mysm0 = new slShaderManager("vs_0.glsl", "fs_0.glsl");
+        mysm0.compile_shader();
 
-        shader_program = compile_shader();
         glUniform3f(renderColorLocation, liveColor.x, liveColor.y, liveColor.z);
 
         return;
     } // void initOpenGL()
 
-    // TODO: CHANGE FROM TEMPORARY TO ACTUAL VERTICES NEEDED
     private static float[] getVertexArray(int win_width, int win_height) {
-        // Fill in this function: you need four vertices.
+        // Fill in this function:  you need four vertices.
         float[] ret_array = {-SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH, SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH};
         return ret_array;
     }  // float[] getVertexArray(...)
@@ -161,15 +131,9 @@ public class slSingleBatchRenderer {
         return indx_array;
     }  //  public int[] getIndexArrayForSquares(...)
 
-    private static void loadMatrix4f(String strMatrixName, Matrix4f my_mat4) {
-        int var_location = glGetUniformLocation(shader_program, strMatrixName);
-        FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(OGL_MATRIX_SIZE);
-        my_mat4.get(matrixBuffer);
-        glUniformMatrix4fv(var_location, false, matrixBuffer);
-    }
-
     private static void renderObjects() {
-        float beginTime = getTime();
+        // Initialize begin, end times here!
+        float startTime = getTime();
         float endTime = getTime();
         float dt = -1.0f;
 
@@ -179,31 +143,40 @@ public class slSingleBatchRenderer {
         while (!glfwWindowShouldClose(glfw_window)) {
             glfwPollEvents();
             glClearColor(ccRed, ccGreen, ccBlue, ccAlpha);
-            // Not sure why this order is important:
+            // Not sure why this order is important - but don't change it:
             glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
 
             endTime = getTime();
-            dt = endTime - beginTime;
-            beginTime = endTime;
+            // compute dt here
+            dt = endTime - startTime;
+            startTime = endTime;
             if (dt > 0) {
+                // Update the two coordinates of the defaultLookFrom of my_camera here
                 my_camera.defaultLookFrom.x -= dt * alpha;
                 my_camera.defaultLookFrom.y -= dt * alpha;
-                if (my_camera.defaultLookFrom.x < -(WIN_WIDTH+ SQUARE_LENGTH)) {
+                // by a scaled amount of dt (dt will be too small + good to have tunable parameter)
+                // Also, if the object is out of the window, reset the camera position
+                if (my_camera.defaultLookFrom.x < -(WIN_WIDTH + SQUARE_LENGTH)) {
                     my_camera.defaultLookFrom.x = camera_start.x;
                     my_camera.defaultLookFrom.y = camera_start.y;
-                    endTime = beginTime = getTime();
                 }
+                // Update "endTime", "beginTime" - else dt will diverge quickly!
+                endTime = getTime();
+                startTime = getTime();
             }
-            glUseProgram(shader_program);
-            loadMatrix4f("uProjMatrix", my_camera.getProjectionMatrix());
-            loadMatrix4f("uViewMatrix", my_camera.getViewMatrix());
+            // Your slShaderManager class has to support these functions:
+            mysm0.set_shader_program();
+            mysm0.loadMatrix4f("uProjMatrix", my_camera.getProjectionMatrix());
+            mysm0.loadMatrix4f("uViewMatrix", my_camera.getViewMatrix());
 
             int verts_per_triangle = 3, tris_per_square = 2;  // Vertices Per Vertex
             int dvps = verts_per_triangle * tris_per_square; // Drawn Vertices Per Square
             glDrawElements(GL_TRIANGLES, dvps, GL_UNSIGNED_INT, 0);
-            glUseProgram(0);
+
+            slShaderManager.detach_shader();
+
             glfwSwapBuffers(glfw_window);
-        }  //  for (int ci = 0; ci < NUM_POLY_ROWS * NUM_POLY_COLS; ++ci)
+        }  //   while (!glfwWindowShouldClose(glfw_window))
     } // renderObjects
 
 }  //  public class slSingleBatchRenderer
