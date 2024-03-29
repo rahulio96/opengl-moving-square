@@ -108,8 +108,34 @@ public class slSingleBatchRenderer {
 
     private static float[] getVertexArray(int win_width, int win_height) {
         // Fill in this function:  you need four vertices.
-        float[] ret_array = {-SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH, SQUARE_LENGTH, -SQUARE_LENGTH, SQUARE_LENGTH};
-        return ret_array;
+        float[] vertices = new float[NUM_POLY_ROWS * NUM_POLY_COLS * vertices_per_square * floats_per_vertices];
+
+        float xmin = POLY_OFFSET;
+        float xmax = xmin + SQUARE_LENGTH;
+        float ymax = POLY_OFFSET;
+        float ymin = ymax - SQUARE_LENGTH;
+        int index = 0;
+
+        for (int row = 0; row < NUM_POLY_ROWS; row++) {
+            for (int col = 0; col < NUM_POLY_COLS; col++) {
+                vertices[index++] = xmin;
+                vertices[index++] = ymin;
+                vertices[index++] = xmax;
+                vertices[index++] = ymin;
+                vertices[index++] = xmax;
+                vertices[index++] = ymax;
+                vertices[index++] = xmin;
+                vertices[index++] = ymax;
+
+                xmin = xmax + POLY_PADDING;
+                xmax = xmin + SQUARE_LENGTH;
+            }
+            xmin = POLY_OFFSET;
+            xmax = xmin + SQUARE_LENGTH;
+            ymax = ymin - POLY_PADDING;
+            ymin = ymax - SQUARE_LENGTH;
+        }
+        return vertices;
     }  // float[] getVertexArray(...)
 
     private static int[] getIndexArrayForSquares(int num_rows, int num_cols) {
