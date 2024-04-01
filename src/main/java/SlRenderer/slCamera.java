@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 
 import static csc133.spot.*;
 
-public class slCamera {
+public class slCamera implements CameraInterface {
     private final Matrix4f projectionMatrix, viewMatrix;
     public Vector3f defaultLookFrom = new Vector3f(0.0f, 0.0f, 00.0f);
     public Vector3f defaultLookAt = new Vector3f(0.0f, 0.0f, -1.0f);
@@ -25,15 +25,37 @@ public class slCamera {
         this.projectionMatrix.identity();
         this.viewMatrix = new Matrix4f();
         this.viewMatrix.identity();
-        setProjection();
+        setOrthoProjection();
     }
 
-    public void setProjection() {
+    @Override
+    public void setOrthoProjection() {
         projectionMatrix.identity();
         projectionMatrix.ortho(FRUSTUM_LEFT, FRUSTUM_RIGHT,
                 FRUSTUM_BOTTOM, FRUSTUM_TOP, Z_NEAR, Z_FAR);
     }
+    @Override
+    public void relativeMoveCamera(float deltaX, float deltaY) {
+        this.defaultLookFrom.x -= deltaX;
+        this.defaultLookFrom.y -= deltaY;
+    }
 
+    @Override
+    public Vector3f getCurLookFrom() {
+        return null;
+    }
+
+    @Override
+    public void setCurLookFrom(Vector3f new_lf) {
+
+    }
+
+    @Override
+    public Vector3f getCurLookAt() {
+        return null;
+    }
+
+    @Override
     public Matrix4f getViewMatrix() {
         curLookFrom.set(defaultLookFrom);
         curLookAt.set(defaultLookAt);
@@ -43,6 +65,7 @@ public class slCamera {
         return this.viewMatrix;
     }
 
+    @Override
     public Matrix4f getProjectionMatrix() {
         return this.projectionMatrix;
     }

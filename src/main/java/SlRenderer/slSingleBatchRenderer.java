@@ -96,7 +96,7 @@ public class slSingleBatchRenderer {
                 vertex_stride, first_vertex_ptr);
 
         my_camera = new slCamera(new Vector3f(camera_start));
-        my_camera.setProjection();
+        my_camera.setOrthoProjection();
 
         mysm0 = new slShaderManager("vs_0.glsl", "fs_0.glsl");
         mysm0.compile_shader();
@@ -178,8 +178,7 @@ public class slSingleBatchRenderer {
             startTime = endTime;
             if (dt > 0) {
                 // Update the two coordinates of the defaultLookFrom of my_camera here
-                my_camera.defaultLookFrom.x -= dt * alpha;
-                my_camera.defaultLookFrom.y -= dt * alpha;
+                my_camera.relativeMoveCamera(dt*alpha, dt*alpha);
                 // by a scaled amount of dt (dt will be too small + good to have tunable parameter)
                 // Also, if the object is out of the window, reset the camera position
                 if (my_camera.defaultLookFrom.x < -(WIN_WIDTH + SQUARE_LENGTH)) {
