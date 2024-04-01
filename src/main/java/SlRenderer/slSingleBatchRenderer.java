@@ -110,10 +110,10 @@ public class slSingleBatchRenderer {
         // Fill in this function:  you need four vertices.
         float[] vertices = new float[NUM_POLY_ROWS * NUM_POLY_COLS * vertices_per_square * floats_per_vertices];
 
-        float xmin = POLY_OFFSET;
+        float xmin = 0;
+        float ymin = 0;
         float xmax = xmin + SQUARE_LENGTH;
-        float ymax = POLY_OFFSET;
-        float ymin = ymax - SQUARE_LENGTH;
+        float ymax = xmin + SQUARE_LENGTH;
         int index = 0;
 
         for (int row = 0; row < NUM_POLY_ROWS; row++) {
