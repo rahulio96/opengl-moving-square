@@ -12,6 +12,7 @@ public class spot {
     public static final int OGL_MATRIX_SIZE = 16;
     public static final int vertices_per_square = 4, floats_per_vertices = 2;
     public static int NUM_POLY_ROWS = 1, NUM_POLY_COLS = 1;
+    public static final float VFactor = 200; // Speed of the polygon across the window
 
     public static final float POLY_OFFSET = 20.0f, POLY_PADDING = 10.0f, SQUARE_LENGTH = 200;
 

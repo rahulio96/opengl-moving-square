@@ -14,13 +14,14 @@ public class slCamera implements CameraInterface {
 
     // Inside getViewMatrix() or elsewhere, don't update the above: will be needed
     // if we reset the camera to starting position. Instead mutate the following where needed:
-    private final Vector3f curLookFrom = new Vector3f(defaultLookFrom);
+    private Vector3f curLookFrom = new Vector3f(defaultLookFrom);
     private final Vector3f curLookAt   = new Vector3f(defaultLookAt);
     private final Vector3f curUpVector = new Vector3f(defaultUpVector);
 
     // camera_position.z > 0 as (0, 0, 0) is at the center of the screen; e.g: (0, 0, 20):
     public slCamera(Vector3f camera_position) {
         this.defaultLookFrom = camera_position;
+        this.curLookFrom = camera_position;
         this.projectionMatrix = new Matrix4f();
         this.projectionMatrix.identity();
         this.viewMatrix = new Matrix4f();
@@ -36,23 +37,23 @@ public class slCamera implements CameraInterface {
     }
     @Override
     public void relativeMoveCamera(float deltaX, float deltaY) {
-        this.defaultLookFrom.x -= deltaX;
-        this.defaultLookFrom.y -= deltaY;
+        this.curLookFrom.x -= deltaX;
+        this.curLookFrom.y -= deltaY;
     }
 
     @Override
     public Vector3f getCurLookFrom() {
-        return null;
+        return this.curLookFrom;
     }
 
     @Override
     public void setCurLookFrom(Vector3f new_lf) {
-
+        this.curLookFrom.set(new_lf);
     }
 
     @Override
     public Vector3f getCurLookAt() {
-        return null;
+        return this.curLookAt;
     }
 
     @Override

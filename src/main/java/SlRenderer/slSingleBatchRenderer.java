@@ -42,8 +42,6 @@ public class slSingleBatchRenderer {
 
     private static slShaderManager mysm0;
 
-    private static final float alpha = 200.0f; // Speed of the polygon across the window;
-
     public slSingleBatchRenderer() {
 
     }
@@ -178,12 +176,12 @@ public class slSingleBatchRenderer {
             startTime = endTime;
             if (dt > 0) {
                 // Update the two coordinates of the defaultLookFrom of my_camera here
-                my_camera.relativeMoveCamera(dt*alpha, dt*alpha);
+                my_camera.relativeMoveCamera(dt*VFactor, dt*VFactor);
                 // by a scaled amount of dt (dt will be too small + good to have tunable parameter)
                 // Also, if the object is out of the window, reset the camera position
-                if (my_camera.defaultLookFrom.x < -(WIN_WIDTH + SQUARE_LENGTH)) {
-                    my_camera.defaultLookFrom.x = camera_start.x;
-                    my_camera.defaultLookFrom.y = camera_start.y;
+                if (my_camera.getCurLookFrom().x < -FRUSTUM_RIGHT) { //(WIN_WIDTH + SQUARE_LENGTH)
+                    my_camera.setCurLookFrom(camera_start);
+                    my_camera.setOrthoProjection();
                 }
                 // Update "endTime", "beginTime" - else dt will diverge quickly!
                 endTime = getTime();
