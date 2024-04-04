@@ -26,12 +26,13 @@ public class slLevelSceneEditor {
     // them in.
     private final float [] vertexArray = {
             // vertices -        colors                   UV coordinates
-            0, 0, SQUARE_LENGTH, 0, SQUARE_LENGTH, SQUARE_LENGTH, 0, SQUARE_LENGTH
+            xmin, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmin,
+            xmax, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmin,
+            xmax, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmax,
+            xmin, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmin
     };
 
-    private final int[] rgElements = {2, 1, 0, //top triangle
-                                      0, 1, 3 // bottom triangle
-    };
+    private final int[] rgElements = { 0, 1, 2, 0, 2, 3 };
     int positionStride = 3;
     int colorStride = 4;
     int textureStride = 2;
@@ -50,7 +51,7 @@ public class slLevelSceneEditor {
         my_camera = new slCamera(my_camera_location);
         my_camera.setOrthoProjection();
 
-        // MY TODO: Go back and change this to the texture .glsl
+        // TODO: REPLACE WITH ACTUAL TEXTURE SHADER FILE
         testShader = new slShaderManager("vs_0.glsl", "fs_0.glsl");
 
         testShader.compile_shader();
@@ -83,6 +84,9 @@ public class slLevelSceneEditor {
 
         // TODO: Add the vtoIndex --> "Vertex Texture Object Index" here via glVertexAttribPointer and enable it -
         // similar to other AttribPointers above.
+        glVertexAttribPointer(vtoIndex, textureStride, GL_FLOAT, false, textureStride,
+                0);
+        glEnableVertexAttribArray(vtoIndex);
 
     }
 
@@ -105,16 +109,16 @@ public class slLevelSceneEditor {
 
         // MY TODO: UNCOMMENT ALL THIS
 
-        //glBindVertexArray(vaoID);
+        glBindVertexArray(vaoID);
 
-        //glEnableVertexAttribArray(vpoIndex);
-        //glEnableVertexAttribArray(vcoIndex);
-        //glEnableVertexAttribArray(vtoIndex);
+        glEnableVertexAttribArray(vpoIndex);
+        glEnableVertexAttribArray(vcoIndex);
+        glEnableVertexAttribArray(vtoIndex);
         glDrawElements(GL_TRIANGLES, rgElements.length, GL_UNSIGNED_INT, 0);
 
-        //glDisableVertexAttribArray(vpoIndex);
-        //glDisableVertexAttribArray(vcoIndex);
-        //glDisableVertexAttribArray(vtoIndex);
+        glDisableVertexAttribArray(vpoIndex);
+        glDisableVertexAttribArray(vcoIndex);
+        glDisableVertexAttribArray(vtoIndex);
 
         //glBindVertexArray(0);
         testShader.detach_shader();
