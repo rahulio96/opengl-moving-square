@@ -1,5 +1,6 @@
 package csc133;
 
+import SlRenderer.slLevelSceneEditor;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
@@ -71,11 +72,12 @@ public class slWindow {
             throw new IllegalStateException("glfwCreateWindow(...) failed; bailing out!");
         }
 
-        glfwSetCursorPosCallback(glfwWindow, slMouseListener::mousePosCallback);
-        glfwSetMouseButtonCallback(glfwWindow, slMouseListener::mouseButtonCallback);
-        glfwSetScrollCallback(glfwWindow, slMouseListener::mouseScrollCallback);
+        // MY TODO: UNCOMMENT THIS
+        //glfwSetCursorPosCallback(glfwWindow, slMouseListener::mousePosCallback);
+        //glfwSetMouseButtonCallback(glfwWindow, slMouseListener::mouseButtonCallback);
+        //glfwSetScrollCallback(glfwWindow, slMouseListener::mouseScrollCallback);
 
-        glfwSetKeyCallback(glfwWindow, slKeyListener::keyCallback);
+        //glfwSetKeyCallback(glfwWindow, slKeyListener::keyCallback);
 
         glfwMakeContextCurrent(glfwWindow);
         glfwSwapInterval(1);
