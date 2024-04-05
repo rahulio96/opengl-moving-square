@@ -13,7 +13,7 @@ import static csc133.spot.*;
 
 public class slLevelSceneEditor {
 
-    private final Vector3f my_camera_location = new Vector3f(0, 0, 0.0f);
+    private final Vector3f my_camera_location = new Vector3f(0f, 0f, 0f);
     private slShaderManager testShader;
     private slTextureManager testTexture;
 
@@ -48,7 +48,7 @@ public class slLevelSceneEditor {
     }
 
     public void init() {
-        my_camera = new slCamera(my_camera_location);
+        my_camera = new slCamera(new Vector3f(my_camera_location));
         my_camera.setOrthoProjection();
 
         // TODO: REPLACE WITH ACTUAL TEXTURE SHADER FILE
