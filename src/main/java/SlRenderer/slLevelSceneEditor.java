@@ -55,7 +55,7 @@ public class slLevelSceneEditor {
 
         testShader.compile_shader();
 
-        testTexture = new slTextureManager(System.getProperty("user.dir") + "/assets/textures/Mario2.png");
+        testTexture = new slTextureManager(System.getProperty("user.dir") + "/assets/textures/MarioWithGun.png");
 
         vaoID = glGenVertexArrays();
         glBindVertexArray(vaoID);
