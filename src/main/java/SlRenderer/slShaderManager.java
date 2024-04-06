@@ -1,77 +1,54 @@
 package SlRenderer;
 
-import org.joml.Matrix4f;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-// UNCOMMENT THIS import static SlRenderer.slSingleBatchRenderer.OGL_MATRIX_SIZE;
-
-import static csc133.spot.OGL_MATRIX_SIZE;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 
 public class slShaderManager {
-    private static String strVertexShader;
-    private static String strFragmentShader;
-    private static int csProgram;
+    private String vsSource;
+    private String fsSource;
+    private int VSID = 0, FSID = 0;
+    private int csProgram = 0;
 
-    slShaderManager (String vs_filename, String fs_filename) {
-        strVertexShader = readShader(vs_filename);
-        strFragmentShader = readShader(fs_filename);
-        csProgram = -1;
-
-    }  // slShaderManager(String vs_filename, String fs_filename)
-
-    // Read from the shader file and save the contents to a string
-    private String readShader(String s_filename) {
-        String strShader = "";
+    slShaderManager(String vs_filename, String fs_filename) {
+        vs_filename = System.getProperty("user.dir") + "/assets/shaders/" + vs_filename;
+        fs_filename = System.getProperty("user.dir") + "/assets/shaders/" + fs_filename;
         try {
-            File sLocation = new File(System.getProperty("user.dir") + "/assets/shaders/" + s_filename);
-            Scanner myReader = new Scanner(sLocation);
-            while (myReader.hasNextLine()) {
-                strShader += myReader.nextLine();
-            }
-            myReader.close();
-
-        } catch (Exception e) {
-            System.out.println("Error finding file: " + e.getMessage());
+            vsSource = new String(Files.readAllBytes(Paths.get(vs_filename)));
+            fsSource = new String(Files.readAllBytes(Paths.get(fs_filename)));
+        } catch (IOException e) {
+            e.printStackTrace();
+            assert false : "Error opening shader files: " + vs_filename + ", " + fs_filename;
         }
-        return strShader;
-    }
-
-    // Overloading function, if we want to change the files and then compile
-    public int compile_shader(String vs_filename, String fs_filename) {
-        strVertexShader = readShader(vs_filename);
-        strFragmentShader = readShader(fs_filename);
-        return compile_shader();
     }  // slShaderManager(String vs_filename, String fs_filename)
 
-    // Compile shaders based on filenames given when slShaderManager object is made
-    public int compile_shader() {
+    public  int compile_shader() {
         csProgram = glCreateProgram();
         int VSID = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(VSID, strVertexShader);
+        glShaderSource(VSID, vsSource);
         glCompileShader(VSID);
-        glAttachShader(csProgram, VSID);
+
         int FSID = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(FSID, strFragmentShader);
+        glShaderSource(FSID, fsSource);
         glCompileShader(FSID);
+
+        glAttachShader(csProgram, VSID);
         glAttachShader(csProgram, FSID);
+
         glLinkProgram(csProgram);
-        glUseProgram(csProgram);
 
         return csProgram;
-    }  // public int compile_shaders()
+    }  // public boolean compile_shaders()
 
     public void set_shader_program() {
         glUseProgram(csProgram);
@@ -81,23 +58,18 @@ public class slShaderManager {
         glUseProgram(0);
     }  // public static void detach_shader()
 
-    // Send the data in my_mat4 to strMatrixName in the shader
+    public void loadTexture(String texName, int texSlot) {
+        int texLocation = glGetUniformLocation(csProgram, texName);
+        set_shader_program();
+        glUniform1i(texLocation, texSlot);
+    }  // public void loadTexture(String texName, int texSlot)
+
     public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4) {
-
-        // 1. Get the uniform location of strMatrix in the shader program compiled
         int var_location = glGetUniformLocation(csProgram, strMatrixName);
-
-        // 2. Create a FloatBuffer
+        final int OGL_MATRIX_SIZE = 16;
         FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(OGL_MATRIX_SIZE);
-
-        // 3. Load the my_mat4 data to the FloatBuffer
         my_mat4.get(matrixBuffer);
-
-        // 4. Send the FloatBuffer data to uniform location
         glUniformMatrix4fv(var_location, false, matrixBuffer);
-
-    }  //  public void loadMatrix4f(String strMatrixName, Matrix4f my_mat4)
-
-
+    }  // private static void loadMatrix4f(String strMatrixName, Matrix4f my_mat4)
 
 }
