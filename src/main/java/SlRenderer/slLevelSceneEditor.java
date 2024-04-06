@@ -21,9 +21,7 @@ public class slLevelSceneEditor {
                             ymax = ymin+ SQUARE_LENGTH, zmax = 0.0f;
 
     private final float uvmin = 0.0f, uvmax = 1.0f;
-    // TODO: Add the vertices here: you need to add the UV Coordinates for the textures here -
-    // colors will be discarded by the fragment texture with the texels. Nevertheless, we do send
-    // them in.
+
     private final float [] vertexArray = {
             // vertices -        colors                   UV coordinates
             xmin, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmin, // 0,0

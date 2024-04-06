@@ -1,6 +1,8 @@
 package csc133;
 
 import SlRenderer.slLevelSceneEditor;
+import SlUtils.slKeyListener;
+import SlUtils.slMouseListener;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
@@ -63,7 +65,7 @@ public class slWindow {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
 
         // Create window:
@@ -72,12 +74,11 @@ public class slWindow {
             throw new IllegalStateException("glfwCreateWindow(...) failed; bailing out!");
         }
 
-        // MY TODO: UNCOMMENT THIS
-        //glfwSetCursorPosCallback(glfwWindow, slMouseListener::mousePosCallback);
-        //glfwSetMouseButtonCallback(glfwWindow, slMouseListener::mouseButtonCallback);
-        //glfwSetScrollCallback(glfwWindow, slMouseListener::mouseScrollCallback);
+        glfwSetCursorPosCallback(glfwWindow, slMouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, slMouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, slMouseListener::mouseScrollCallback);
 
-        //glfwSetKeyCallback(glfwWindow, slKeyListener::keyCallback);
+        glfwSetKeyCallback(glfwWindow, slKeyListener::keyCallback);
 
         glfwMakeContextCurrent(glfwWindow);
         glfwSwapInterval(1);
