@@ -26,10 +26,10 @@ public class slLevelSceneEditor {
     // them in.
     private final float [] vertexArray = {
             // vertices -        colors                   UV coordinates
-            xmin, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmin,
-            xmax, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmin,
-            xmax, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmax,
-            xmin, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmin
+            xmin, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmin, // 0,0
+            xmax, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmin, // 1,0
+            xmax, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmax, // 1,1
+            xmin, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmax  // 0,1
     };
 
     private final int[] rgElements = { 0, 1, 2, 0, 2, 3 };
@@ -51,11 +51,11 @@ public class slLevelSceneEditor {
         my_camera = new slCamera(new Vector3f(my_camera_location));
         my_camera.setOrthoProjection();
 
-        // TODO: REPLACE WITH ACTUAL TEXTURE SHADER FILE
-        testShader = new slShaderManager("vs_0.glsl", "fs_0.glsl");
+        testShader = new slShaderManager("vs_texture_1.glsl", "fs_texture_1.glsl");
 
         testShader.compile_shader();
-        // TODO: Add texture manager object here:
+
+        testTexture = new slTextureManager(System.getProperty("user.dir") + "/assets/shaders/Mario2.png");
 
         vaoID = glGenVertexArrays();
         glBindVertexArray(vaoID);
@@ -78,21 +78,15 @@ public class slLevelSceneEditor {
         glVertexAttribPointer(vpoIndex, positionStride, GL_FLOAT, false, vertexStride, 0);
         glEnableVertexAttribArray(vpoIndex);
 
-        glVertexAttribPointer(vcoIndex, colorStride, GL_FLOAT, false, vertexStride,
-                                                            positionStride * Float.BYTES);
+        glVertexAttribPointer(vcoIndex, colorStride, GL_FLOAT, false, vertexStride, positionStride * Float.BYTES);
         glEnableVertexAttribArray(vcoIndex);
 
-        // TODO: Add the vtoIndex --> "Vertex Texture Object Index" here via glVertexAttribPointer and enable it -
-        // similar to other AttribPointers above.
-        glVertexAttribPointer(vtoIndex, textureStride, GL_FLOAT, false, textureStride,
-                0);
+        glVertexAttribPointer(vtoIndex, textureStride, GL_FLOAT, false, vertexStride, (colorStride + positionStride) * Float.BYTES);
         glEnableVertexAttribArray(vtoIndex);
 
     }
 
     public void update(float dt) {
-
-        //TODO: Add camera motion here:
 
         my_camera.relativeMoveCamera(dt*VFactor, dt*VFactor);
 
@@ -102,12 +96,10 @@ public class slLevelSceneEditor {
         }
 
         testShader.set_shader_program();
-
+        testTexture.bind_texture();
 
         testShader.loadMatrix4f("uProjMatrix", my_camera.getProjectionMatrix());
         testShader.loadMatrix4f("uViewMatrix", my_camera.getViewMatrix());
-
-        // MY TODO: UNCOMMENT ALL THIS
 
         glBindVertexArray(vaoID);
 
@@ -120,8 +112,9 @@ public class slLevelSceneEditor {
         glDisableVertexAttribArray(vcoIndex);
         glDisableVertexAttribArray(vtoIndex);
 
-        //glBindVertexArray(0);
+        glBindVertexArray(0);
         testShader.detach_shader();
+        testTexture.unbind_texture();
     }
 
 }
