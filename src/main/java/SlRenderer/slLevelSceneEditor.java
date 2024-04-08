@@ -17,17 +17,17 @@ public class slLevelSceneEditor {
     private slShaderManager testShader;
     private slTextureManager testTexture;
 
-    private float xmin = POLY_OFFSET, ymin = POLY_OFFSET, zmin = 0.0f, xmax = xmin+ SQUARE_LENGTH,
+    private float xmin = POLY_OFFSET, ymin = POLY_OFFSET, zmin = 0.0f, xmax = xmin + SQUARE_LENGTH,
                             ymax = ymin+ SQUARE_LENGTH, zmax = 0.0f;
 
     private final float uvmin = 0.0f, uvmax = 1.0f;
 
     private final float [] vertexArray = {
-            // vertices -        colors                   UV coordinates
-            xmin, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmin, // 0,0
-            xmax, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmin, // 1,0
-            xmax, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmax, // 1,1
-            xmin, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmax  // 0,1
+            // vertices          colors                  UV coordinates
+            xmin, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmax, // 0,1
+            xmax, ymin, zmin, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmax, // 1,1
+            xmax, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmax, uvmin, // 1,0
+            xmin, ymax, zmax, 1.0f, 1.0f, 0.0f, 1.0f, uvmin, uvmin  // 0,0
     };
 
     private final int[] rgElements = { 0, 1, 2, 0, 2, 3 };
@@ -53,7 +53,7 @@ public class slLevelSceneEditor {
 
         testShader.compile_shader();
 
-        testTexture = new slTextureManager(System.getProperty("user.dir") + "/assets/textures/MarioWithGun.png");
+        testTexture = new slTextureManager(System.getProperty("user.dir") + "/assets/textures/Spider.png");
 
         vaoID = glGenVertexArrays();
         glBindVertexArray(vaoID);
